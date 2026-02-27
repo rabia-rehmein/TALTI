@@ -1,0 +1,1 @@
+TALTI is a web-based platform that allows users to customize clothing items by changing colors and uploading their own designs or graphics. The goal of the project is to create an intuitive, interactive shopping experience that makes personalization easy and fun for users.
