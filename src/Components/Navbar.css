@@ -1,0 +1,30 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 60px;
+
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #4c5fd7;
+  font-weight: 500;
+}
