@@ -1,0 +1,260 @@
+rules_version = '2';
+
+// Deploy: firebase deploy --only firestore:rules
+// Or paste into Firebase console → Firestore → Rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function validShippingAddr(m) {
+      return m.keys().hasOnly(['line1', 'line2', 'city', 'region', 'postalCode', 'country'])
+        && m.line1 is string
+        && m.line2 is string
+        && m.city is string
+        && m.region is string
+        && m.postalCode is string
+        && m.country is string;
+    }
+
+    match /users/{userId} {
+      function isOwner() {
+        return request.auth != null && request.auth.uid == userId;
+      }
+
+      function validUserShape() {
+        let d = request.resource.data;
+        return d.keys().hasOnly([
+          'email',
+          'displayName',
+          'photoURL',
+          'emailVerified',
+          'primaryProvider',
+          'createdAt',
+          'updatedAt',
+          'phone',
+          'shippingAddress',
+        ])
+          && d.email is string
+          && d.displayName is string
+          && (d.photoURL == null || d.photoURL is string)
+          && d.emailVerified is bool
+          && d.primaryProvider in ['password', 'google.com']
+          && d.phone is string
+          && d.shippingAddress is map
+          && validShippingAddr(d.shippingAddress)
+          && d.email == request.auth.token.email
+          && d.emailVerified == request.auth.token.email_verified;
+      }
+
+      allow read: if isOwner();
+
+      allow create: if isOwner() && validUserShape();
+
+      allow update: if isOwner()
+        && validUserShape()
+        && request.resource.data.createdAt == resource.data.createdAt;
+
+      allow delete: if false;
+
+      match /savedDesigns/{designId} {
+        function designOwner() {
+          return request.auth != null && request.auth.uid == userId;
+        }
+
+        function validDesignCreate() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['name', 'notes', 'designPayload', 'createdAt', 'updatedAt'])
+            && d.name is string
+            && d.notes is string
+            && d.designPayload is map;
+        }
+
+        function validDesignUpdate() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['name', 'notes', 'designPayload', 'createdAt', 'updatedAt'])
+            && d.name is string
+            && d.notes is string
+            && d.designPayload is map
+            && d.createdAt == resource.data.createdAt;
+        }
+
+        allow read: if designOwner();
+
+        allow create: if designOwner() && validDesignCreate();
+
+        allow update: if designOwner() && validDesignUpdate();
+
+        allow delete: if designOwner();
+      }
+
+      match /cartItems/{itemId} {
+        function cartOwner() {
+          return request.auth != null && request.auth.uid == userId;
+        }
+
+        function validPatternMap(m) {
+          return m is map;
+        }
+
+        function validCartItemCreate() {
+          let d = request.resource.data;
+          return d.keys().hasOnly([
+            'garmentId',
+            'title',
+            'size',
+            'unitPrice',
+            'qty',
+            'variant',
+            'glbPath',
+            'sku',
+            'currency',
+            'colorHex',
+            'buttonColorHex',
+            'patternName',
+            'patternMap',
+            'designKey',
+            'createdAt',
+            'updatedAt',
+          ])
+            && d.garmentId is string
+            && d.title is string
+            && d.size in ['S', 'M', 'L']
+            && d.unitPrice is number
+            && d.unitPrice >= 0
+            && d.unitPrice <= 1000000
+            && d.qty is int
+            && d.qty >= 1
+            && d.qty <= 99
+            && d.variant is string
+            && d.variant.size() <= 500
+            && d.glbPath is string
+            && d.sku is string
+            && d.currency == 'USD'
+            && (d.colorHex == null || d.colorHex is string)
+            && (d.buttonColorHex == null || d.buttonColorHex is string)
+            && (d.patternName == null || d.patternName is string)
+            && validPatternMap(d.patternMap)
+            && d.designKey is string
+            && d.designKey.size() <= 200;
+        }
+
+        function cartItemImmutableMatch() {
+          let d = request.resource.data;
+          let r = resource.data;
+          return d.garmentId == r.garmentId
+            && d.title == r.title
+            && d.size == r.size
+            && d.unitPrice == r.unitPrice
+            && d.variant == r.variant
+            && d.glbPath == r.glbPath
+            && d.sku == r.sku
+            && d.currency == r.currency
+            && d.colorHex == r.colorHex
+            && d.buttonColorHex == r.buttonColorHex
+            && d.patternName == r.patternName
+            && d.patternMap == r.patternMap
+            && d.designKey == r.designKey
+            && d.createdAt == r.createdAt;
+        }
+
+        function validCartItemQtyUpdate() {
+          let d = request.resource.data;
+          return d.qty is int
+            && d.qty >= 1
+            && d.qty <= 99;
+        }
+
+        allow read: if cartOwner();
+
+        allow create: if cartOwner() && validCartItemCreate();
+
+        allow update: if cartOwner()
+          && cartItemImmutableMatch()
+          && validCartItemQtyUpdate();
+
+        allow delete: if cartOwner();
+      }
+    }
+
+    match /orders/{orderId} {
+      function orderOwnedByRequestUser() {
+        return request.auth != null && resource.data.userId == request.auth.uid;
+      }
+
+      function orderCreateOwnedByRequestUser() {
+        return request.auth != null && request.resource.data.userId == request.auth.uid;
+      }
+
+      function validOrderCreate() {
+        let d = request.resource.data;
+        return d.keys().hasOnly([
+          'userId',
+          'orderNumber',
+          'status',
+          'items',
+          'subtotal',
+          'currency',
+          'shippingAddressSnapshot',
+          'notes',
+          'customerEmail',
+          'customerName',
+          'shippingFee',
+          'taxEstimated',
+          'orderTotal',
+          'createdAt',
+          'updatedAt',
+        ])
+          && d.userId == request.auth.uid
+          && d.orderNumber is string
+          && d.status is string
+          && d.items is list
+          && d.subtotal is number
+          && d.currency is string
+          && d.shippingAddressSnapshot is map
+          && validShippingAddr(d.shippingAddressSnapshot)
+          && d.notes is string
+          && d.customerEmail is string
+          && d.customerName is string
+          && d.shippingFee is number
+          && d.shippingFee >= 0
+          && d.shippingFee <= 100000
+          && d.taxEstimated is number
+          && d.taxEstimated >= 0
+          && d.taxEstimated <= 1000000
+          && d.orderTotal is number
+          && d.orderTotal >= 0
+          && d.orderTotal <= 10000000;
+      }
+
+      function validOrderUpdate() {
+        let d = request.resource.data;
+        let r = resource.data;
+        return d.userId == r.userId
+          && d.orderNumber == r.orderNumber
+          && d.createdAt == r.createdAt
+          && d.items == r.items
+          && d.subtotal == r.subtotal
+          && d.currency == r.currency
+          && d.shippingAddressSnapshot == r.shippingAddressSnapshot
+          && d.customerEmail == r.customerEmail
+          && d.customerName == r.customerName
+          && d.shippingFee == r.shippingFee
+          && d.taxEstimated == r.taxEstimated
+          && d.orderTotal == r.orderTotal
+          && d.status is string
+          && d.notes is string;
+      }
+
+      allow read: if orderOwnedByRequestUser();
+
+      allow create: if orderCreateOwnedByRequestUser() && validOrderCreate();
+
+      allow update: if orderOwnedByRequestUser() && validOrderUpdate();
+
+      allow delete: if orderOwnedByRequestUser();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

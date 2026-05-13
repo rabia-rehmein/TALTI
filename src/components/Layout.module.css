@@ -1,0 +1,25 @@
+.layout {
+  min-height: 100svh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+}
+
+.main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 680px) {
+  .main {
+    /*
+      Keep the home hero eyebrow text clear of the sticky header on mobile.
+      (Sticky headers can visually overlap transparent content.)
+    */
+    padding-top: 0.6rem;
+  }
+}
+

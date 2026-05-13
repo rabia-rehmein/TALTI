@@ -1,0 +1,300 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  padding: 0.85rem clamp(0.9rem, 3vw, 2rem);
+  background: transparent;
+}
+
+.headerOpen {
+  /* Keep the close (X) button visible/clickable above the overlay */
+  z-index: 80;
+}
+
+.inner {
+  max-width: 76rem;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.85rem 0;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.brand {
+  justify-self: start;
+  font-family: var(--font-vogue);
+  font-size: 1.65rem;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: color-mix(in oklab, var(--ink) 82%, transparent);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: opacity 0.2s ease;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brand:hover {
+  opacity: 0.55;
+}
+
+.nav {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+  min-width: 0;
+}
+
+.link {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--ink) 38%, transparent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: color-mix(in oklab, var(--ink) 78%, transparent);
+}
+
+.linkActive {
+  color: color-mix(in oklab, var(--ink) 82%, transparent);
+}
+
+.end {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+}
+
+.signIn {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--ink) 38%, transparent);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.signIn:hover {
+  color: color-mix(in oklab, var(--ink) 82%, transparent);
+}
+
+.signIn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.mobileTrigger {
+  display: none;
+  justify-self: end;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: transparent;
+  border: none;
+  color: color-mix(in oklab, var(--ink) 82%, transparent);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mobileTrigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Two-line control that animates to an X when the mobile menu is open */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.hamburgerLine {
+  width: 18px;
+  height: 2px;
+  background-color: currentColor;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+  transform-origin: 50% 50%;
+}
+
+.hamburger:hover .hamburgerLine {
+  opacity: 0.85;
+}
+
+.hamburgerOpen .hamburgerLine:first-child {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.hamburgerOpen .hamburgerLine:last-child {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+.mobileMenu {
+  position: fixed;
+  inset: 0;
+  /* Must sit above the sticky header + hero title */
+  z-index: 65;
+  background: color-mix(in oklab, var(--bg) 0.5%, transparent);
+  backdrop-filter: blur(22px) saturate(1.15);
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+}
+
+.mobileMenuInner {
+  max-width: 34rem;
+  margin: 0 auto;
+  height: 100%;
+  /*
+    Mirror the intended layout from the provided implementation:
+    start the menu content below the header/title area + safe-area inset.
+  */
+  padding: calc(5.25rem + env(safe-area-inset-top, 0px)) 1rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-top: 1.7rem;
+}
+
+.mobileNavList {
+  display: flex;
+  flex-direction: column;
+  gap: 2.15rem;
+}
+
+.mobileLink {
+  font-family: var(--font-sans);
+  font-size: 1.65rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 1.15rem 0.95rem;
+  border-radius: 0.9rem;
+  transition: background 0.2s ease;
+  line-height: 1.15;
+}
+
+.mobileLink:hover {
+  background: color-mix(in oklab, var(--ink) 6%, transparent);
+}
+
+.mobileLink:active {
+  background: color-mix(in oklab, var(--ink) 9%, transparent);
+}
+
+.mobileLinkIndex {
+  display: inline-block;
+  margin-right: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: color-mix(in oklab, var(--ink) 45%, transparent);
+  text-transform: uppercase;
+}
+
+.mobileLink:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.mobileFooter {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+}
+
+.mobileFootnote {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: color-mix(in oklab, var(--ink) 45%, transparent);
+}
+
+.mobileButton {
+  height: 44px;
+  border-radius: 0.9rem;
+  border: none;
+  background: color-mix(in oklab, var(--ink) 88%, transparent);
+  color: var(--bg);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+@media (max-width: 680px) {
+  .header {
+    /* Reduce vertical footprint on phones */
+    padding: 0.35rem 0.75rem;
+  }
+
+  .inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 1.1rem;
+  }
+
+  .nav { display: none; }
+  .end { display: none; }
+
+  .mobileTrigger {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 420px) {
+  .header {
+    padding: 0.3rem 0.7rem;
+  }
+
+  .brand {
+    font-size: 1.35rem;
+  }
+
+  .nav {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .link,
+  .signIn {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+  }
+}
+

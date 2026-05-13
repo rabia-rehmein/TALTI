@@ -1,0 +1,76 @@
+/* Scan all of `src/` for class names (parent of this `styles/` folder). */
+@import 'tailwindcss' source('..');
+
+:root {
+  color-scheme: dark;
+
+  --bg: #080808;
+  --bg-elevated: #121212;
+  --ink: #e8e8e5;
+  --ink-muted: color-mix(in oklab, var(--ink) 64%, transparent);
+  --line: color-mix(in oklab, var(--ink) 12%, transparent);
+  --line-strong: color-mix(in oklab, var(--ink) 24%, transparent);
+  --accent: #b8b8b3;
+  --accent-hover: #d0d0cb;
+  --accent-soft: color-mix(in oklab, var(--accent) 14%, transparent);
+  --hero-glow: color-mix(in oklab, var(--ink) 5%, transparent);
+
+  --field-bg: color-mix(in oklab, var(--bg-elevated) 48%, transparent);
+  --field-bg-focus: color-mix(in oklab, var(--bg-elevated) 62%, transparent);
+  --shadow-card: 0 14px 48px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 color-mix(in oklab, var(--ink) 9%, transparent);
+  --shadow-panel: 0 24px 60px rgba(0, 0, 0, 0.58);
+  --outline-focus: color-mix(in oklab, var(--ink) 28%, transparent);
+  --ring-focus: color-mix(in oklab, var(--ink) 34%, transparent);
+
+  /* 3D studio cyclorama: soft “studio white” — reads light, not #fff */
+  --studio-light-bg: #ebeae7;
+  --studio-dark-bg: #060608;
+  /* Dark cyclorama: tinted glass over app bg (shader shows through canvas clear) */
+  --studio-dark-surface: color-mix(in oklab, var(--studio-dark-bg) 54%, transparent);
+  --studio-on-light-fg: #0e0e12;
+  --studio-on-light-muted: color-mix(in oklab, var(--studio-on-light-fg) 45%, transparent);
+  --studio-on-light-soft: color-mix(in oklab, var(--studio-on-light-fg) 38%, transparent);
+
+  --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-vogue: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+
+  font-family: var(--font-sans);
+  font-size: clamp(15px, 1.55vw, 17px);
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--ink-muted);
+  background-color: transparent;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: #060606;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+a {
+  color: inherit;
+}
+
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
